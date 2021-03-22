@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Typography, Button, Form, message, Input, Icon } from 'antd';
 import Dropzone from 'react-dropzone';
+import { useSelector } from 'react-redux';
 import Axios from 'axios';
 
 const { TextArea } = Input;
@@ -18,7 +19,9 @@ const CategoryOptions = [
     { value: 3, label: "Pets & Animals" }
 ]
 
-function VideoUploadPage() {
+
+function VideoUploadPage(props) {
+    const user = useSelector(state => state.user); // state stroe (redux 상태관리 저장소?)에서 user state을 가져옴
     const [VideoTitle, setVideoTitle] = useState("");
     const [Description, setDescription] = useState("");
     const [Private, setPrivate] = useState(0);
@@ -73,9 +76,35 @@ function VideoUploadPage() {
                                 alert('썸네일 생성 실패');
                             }
                         })
+                } else {
+                    alert('비디오 가져오기 실패');
+                }
+            })
+    }
+
+    const onSubmit = (e) => {
+        e.preventDefault(); // 원래 하려던걸 방지, 중지 후 아래 코드 실행
+        // 이미 state에 user 데이터 존재 -> redux hook으로 가져옴
+        const variables = {
+            writer: user.userData._id,
+            title: VideoTitle,
+            description: Description,
+            privacy: Private,
+            filePath: FilePath,
+            category: Category,
+            duration: Duration,
+            thumbnail: ThumbnailPath,
+        }
+        Axios.post('/api/video/uploadVideo', variables)
+            .then((res) => {
+                if (res.data.success) {
+                    message.success('업로드 성공')
+                    setTimeout(() => {
+                        props.history.push('/');
+                    }, 1000);
 
                 } else {
-                    alert('비디오 업로드 실패');
+                    alert("비디오 업로드 실패");
                 }
             })
     }
@@ -86,15 +115,14 @@ function VideoUploadPage() {
                 <Title level={2}>Upload Video</Title>
             </div>
 
-            <Form onSubmit>
+            <Form onSubmit={onSubmit}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     {/* Drop zone: npm install react-dropzone --save */}
                     <Dropzone
                         accept="video/*"
                         onDrop={onDrop}
                         multiple={false}
-                        maxSize={800000000}
-                    >
+                        maxSize={800000000} >
                         {({ getRootProps, getInputProps }) => (
                             <div style={{ width: '300px', height: '240px', border: '1px solid lightgray', display: 'flex', alignItems: 'center', justifyContent: 'center' }} {...getRootProps()}>
                                 <input {...getInputProps()} />
@@ -146,7 +174,7 @@ function VideoUploadPage() {
                 <br />
                 <br />
 
-                <Button type="primary" size="large" onClick>
+                <Button type="primary" size="large" onClick={onSubmit}>
                     Submit
                 </Button>
             </Form>
