@@ -23,6 +23,9 @@ function VideoUploadPage() {
     const [Description, setDescription] = useState("");
     const [Private, setPrivate] = useState(0);
     const [Category, setCategory] = useState("Film & Animation");
+    const [FilePath, setFilePath] = useState("");
+    const [Duration, setDuration] = useState("");
+    const [ThumbnailPath, setThumbnailPath] = useState("");
 
     const onTitleChange = (e) => {
         setVideoTitle(e.currentTarget.value);
@@ -41,10 +44,11 @@ function VideoUploadPage() {
     }
 
     const onDrop = (files) => {
-        let formData = new FormData;
+        let formData = new FormData();
         const config = {
             header: { 'content-type': 'multipart/form-data' }
         }
+        console.log(files)
         // 파일을 보낼 때는 header가 없으면 오류 발생
         formData.append("file", files[0]);
         //console.log(files)
@@ -52,6 +56,24 @@ function VideoUploadPage() {
             .then((res) => {
                 if (res.data.success) {
                     console.log(res.data)
+
+                    let variable = {
+                        url: res.data.url,
+                        fileName: res.data.fileName
+                    }
+                    setFilePath(res.data.url);
+                    // 비디오 업로드 성공 후 axios 다시 날림
+                    Axios.post('/api/video/thumbnail', variable)
+                        .then(res => {
+                            if (res.data.success) {
+                                // 정보를 state에 저장
+                                setDuration(res.data.fileDuration);
+                                setThumbnailPath(res.data.url);
+                            } else {
+                                alert('썸네일 생성 실패');
+                            }
+                        })
+
                 } else {
                     alert('비디오 업로드 실패');
                 }
@@ -71,7 +93,7 @@ function VideoUploadPage() {
                         accept="video/*"
                         onDrop={onDrop}
                         multiple={false}
-                        maxSize={100000}
+                        maxSize={800000000}
                     >
                         {({ getRootProps, getInputProps }) => (
                             <div style={{ width: '300px', height: '240px', border: '1px solid lightgray', display: 'flex', alignItems: 'center', justifyContent: 'center' }} {...getRootProps()}>
@@ -81,9 +103,11 @@ function VideoUploadPage() {
                         )}
                     </Dropzone>
                     {/* 비디오 업로드 시 썸네일 */}
-                    <div>
-                        <img src alt />
-                    </div>
+                    {ThumbnailPath &&
+                        <div>
+                            <img src={`http://localhost:5000/${ThumbnailPath}`} alt="thumbnail" />
+                        </div>
+                    }
                 </div>
 
                 <br />
