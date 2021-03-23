@@ -93,10 +93,22 @@ router.post('/uploadVideo', (req, res) => {
 // landingPage db에서 비디오 정보가져오기
 router.get('/getVideos', (req, res) => {
     Video.find() // video collection의 모든 비디오 정보 가져오기
-        .populate('writer') // populate 해줘야 User 정보도 모두 가져올 수 있고, 해주지 않으면 id만 가져올 수 있음 (Schema.Types.ObjectId)
-        .exec((err, videos) => {
+        .populate('writer') // populate 해줘야 User 정보 모두 가져올 수 있고, 해주지 않으면 id만 가져올 수 있음 (Schema.Types.ObjectId)
+        .exec((err, videos) => { // 쿼리 실행
             if (err) return res.status(400).send(err);
             res.status(200).json({ success: true, videos });
+        })
+})
+
+// DetailPage db에서 해당 비디오 정보가져오기
+router.post('/getVideoDetail', (req, res) => {
+    console.log(req.body.videoId)
+    Video.findOne({ "_id": req.body.videoId }) // video collection의 모든 비디오 정보 가져오기
+        .populate('writer') // populate 해줘야 User 정보 모두 가져올 수 있고, 해주지 않으면 id만 가져올 수 있음 (Schema.Types.ObjectId)
+        .exec((err, videoDetail) => {
+            if (err) return res.status(400).send(err);
+            console.log(videoDetail)
+            res.status(200).json({ success: true, videoDetail });
         })
 })
 
