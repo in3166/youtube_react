@@ -90,4 +90,14 @@ router.post('/uploadVideo', (req, res) => {
     })
 })
 
+// landingPage db에서 비디오 정보가져오기
+router.get('/getVideos', (req, res) => {
+    Video.find() // video collection의 모든 비디오 정보 가져오기
+        .populate('writer') // populate 해줘야 User 정보도 모두 가져올 수 있고, 해주지 않으면 id만 가져올 수 있음 (Schema.Types.ObjectId)
+        .exec((err, videos) => {
+            if (err) return res.status(400).send(err);
+            res.status(200).json({ success: true, videos });
+        })
+})
+
 module.exports = router;
