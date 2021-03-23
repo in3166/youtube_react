@@ -5,6 +5,7 @@ const { Video } = require("../models/Video");
 const { auth } = require("../middleware/auth");
 const multer = require('multer');
 const ffmpeg = require('fluent-ffmpeg');
+const { Subscriber } = require('../models/Subscriber');
 
 // config option
 // client 파일을 보내면 여길 먼저 타서 upload에 저장
@@ -38,7 +39,7 @@ router.post('/uploadfiles', (req, res) => {
         if (err) {
             return res.json({ success: false, err })  // route폴더의 video 파일에서 ('/upload'){} 안에 res.data.success가 false로 돼서 alert 띄움
         }
-        console.log(req.body)
+        //console.log(req.body)
         return res.json({ success: true, url: res.req.file.path, fileName: res.req.file.filename }) //url: 비디오가 저장되는 경로를 클라이언트에 보내줌
     })
 })
@@ -107,9 +108,23 @@ router.post('/getVideoDetail', (req, res) => {
         .populate('writer') // populate 해줘야 User 정보 모두 가져올 수 있고, 해주지 않으면 id만 가져올 수 있음 (Schema.Types.ObjectId)
         .exec((err, videoDetail) => {
             if (err) return res.status(400).send(err);
-            console.log(videoDetail)
+            //console.log(videoDetail)
             res.status(200).json({ success: true, videoDetail });
         })
+})
+router.get('/getSubscriptionVideos', (req, res) => {
+    // 자신의 ID로 구독하는 사람들을 찾기
+    Subscriber.find({ userFrom: req.body.userFrom })
+        .exec((err, subscriberInfo) => {
+            if (err) return res.status(400).send(err);
+            let subscribedUser = []; // 해당 유저가 구독하는 사용자들의 id(userTo) 저장
+            subscriberInfo.map((subscriber, i) => {
+                subscribedUser.push(subscriber.userTo);
+            })
+            res.status(200).json({ success: true, subscriberInfo });
+        })
+
+    // 찾은 사람들의 비디오를 가져오기
 })
 
 module.exports = router;
