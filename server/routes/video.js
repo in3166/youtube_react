@@ -121,10 +121,14 @@ router.get('/getSubscriptionVideos', (req, res) => {
             subscriberInfo.map((subscriber, i) => {
                 subscribedUser.push(subscriber.userTo);
             })
+
+            // 찾은 사람들의 비디오를 가져오기
+            Video.find({ writer: { $in: subscribedUser } }) // $in: mongoDB 메서드 - 여러 명의 정보 가져옴
+                .populate('writer') // writer의 이미지 등 다른 정보도 가져오기
+                .exec()
             res.status(200).json({ success: true, subscriberInfo });
         })
 
-    // 찾은 사람들의 비디오를 가져오기
 })
 
 module.exports = router;
