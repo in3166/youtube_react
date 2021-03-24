@@ -13,12 +13,12 @@ function SubscriptionPage() {
 
     // db에서 비디오 정보 가져오기
     useEffect(() => {
-
         const subscriptionVariable = {
             userFrom: localStorage.getItem('userId')
         }
+
         // 랜딩페이지에 오자마자 Request
-        Axios.get('/api/video/getSubscriptionVideos', subscriptionVariable)
+        Axios.post('/api/video/getSubscriptionVideos', subscriptionVariable)
             .then(res => {
                 if (res.data.success) {
                     setVideo(res.data.videos)
@@ -32,7 +32,7 @@ function SubscriptionPage() {
         var minutes = Math.floor(video.duration / 60);
         var seconds = Math.floor(video.duration - minutes * 60);
 
-        return <Col lg={6} md={8} xs={24}>
+        return <Col key={index} lg={6} md={8} xs={24}>
             <div style={{ position: 'relative' }}>
                 <a href={`/video/${video._id}`} >
                     <img style={{ width: '100%' }} src={`http://localhost:5000/${video.thumbnail}`} alt="thumbnail" />
@@ -62,7 +62,6 @@ function SubscriptionPage() {
             <Row gutter={[32, 16]}>
                 {/* 전체가 24사이즈 */}
                 {renderCards}
-
             </Row>
         </div>
     )

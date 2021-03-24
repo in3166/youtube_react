@@ -23,14 +23,17 @@ function VideoDetailPage(props) {
     }, []);
 
     if (VideoDetail.writer) {
+        // 사용자 자신의 동영상에 구독 버튼 없애기
+        const subscribeButton = VideoDetail.writer._id !== localStorage.getItem('userId') && <Subscribe userTo={VideoDetail.writer._id} userFrom={localStorage.getItem('userId')} />;
+
         return (
             // gutter: 여백 (표 사이)
             <Row gutter={[16, 16]}>
                 <Col lg={18} xs={24}>
                     <div style={{ width: '100%', padding: '3rem 4rem' }}>
                         <video style={{ width: '100%' }} src={`http://localhost:5000/${VideoDetail.filePath}`} controls />
-
-                        <List.Item actions={[<Subscribe userTo={VideoDetail.writer._id} userFrom={localStorage.getItem('userId')} />]} >
+                        {/* 구독 버튼 */}
+                        <List.Item actions={[subscribeButton]} >
                             <List.Item.Meta
                                 avatar={<Avatar src={VideoDetail.writer.image} />}
                                 title={VideoDetail.writer.name}

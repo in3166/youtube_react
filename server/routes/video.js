@@ -112,7 +112,9 @@ router.post('/getVideoDetail', (req, res) => {
             res.status(200).json({ success: true, videoDetail });
         })
 })
-router.get('/getSubscriptionVideos', (req, res) => {
+
+// Subscription Page
+router.post('/getSubscriptionVideos', (req, res) => {
     // 자신의 ID로 구독하는 사람들을 찾기
     Subscriber.find({ userFrom: req.body.userFrom })
         .exec((err, subscriberInfo) => {
@@ -125,8 +127,10 @@ router.get('/getSubscriptionVideos', (req, res) => {
             // 찾은 사람들의 비디오를 가져오기
             Video.find({ writer: { $in: subscribedUser } }) // $in: mongoDB 메서드 - 여러 명의 정보 가져옴
                 .populate('writer') // writer의 이미지 등 다른 정보도 가져오기
-                .exec()
-            res.status(200).json({ success: true, subscriberInfo });
+                .exec((err, videos) => {
+                    if (err) return res.status(400).send(err);
+                    res.status(200).json({ success: true, videos });
+                })
         })
 
 })
