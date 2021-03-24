@@ -3,15 +3,17 @@ import { Row, Col, List, Avatar } from 'antd';
 import Axios from 'axios';
 import SideVideo from './Sections/SideVideo.js';
 import Subscribe from './Sections/Subscribe';
+import Comment from './Sections/Comment';
 
 
 function VideoDetailPage(props) {
     const [VideoDetail, setVideoDetail] = useState([]);
-
+    const [Comments, setComments] = useState([])
     const videoId = props.match.params.videoId;
     const variable = { videoId: videoId } // url에서 id 가져오기
 
     useEffect(() => {
+        // 비디오 정보 가져오기
         Axios.post('/api/video/getVideoDetail', variable)
             .then(res => {
                 if (res.data.success) {
@@ -20,6 +22,17 @@ function VideoDetailPage(props) {
                     alert("비디오 정보 가져오기 실패");
                 }
             })
+
+        // 댓글 정보 가져오기
+        Axios.post('/api/comment/getComments', variable)
+            .then(res => {
+                if (res.data.success) {
+                    setComments(res.data.comments);
+                } else {
+                    alert("비디오 정보 가져오기 실패");
+                }
+            })
+
     }, []);
 
     if (VideoDetail.writer) {
@@ -40,6 +53,9 @@ function VideoDetailPage(props) {
                                 description={VideoDetail.description}
                             />
                         </List.Item>
+
+                        {/* 댓글 */}
+                        <Comment videoId={videoId} commentLists={Comments} />
                     </div>
 
                 </Col>
