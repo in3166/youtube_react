@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Axios from 'axios';
 import { useSelector } from 'react-redux';
 import SingleComment from './SingleComment';
+import ReplyComment from './ReplyComment';
 // 구조
 // Single Comment [1. userInfo, 2. Content, 3. Comment Form, 4. Actions]
 // Reply [<SingleCommnet> <ReplyComment>]
@@ -14,12 +15,11 @@ function Comment(props) {
     const [CommentValue, setCommentValue] = useState('');
 
     const handleClick = (e) => {
-        setCommentValue(e.currentTarget.CommentValue);
+        setCommentValue(e.target.value);
     }
 
     const onSubmit = (e) => {
         e.preventDefault(); // refresh 방지
-
         const variables = {
             content: CommentValue,
             writer: user.userData._id, // redux에서 가져와보기
@@ -29,7 +29,9 @@ function Comment(props) {
         Axios.post('/api/comment/saveComment', variables)
             .then(res => {
                 if (res.data.success) {
-                    console.log(res.data.result)
+                    props.refreshFunction(res.data.result);
+                    setCommentValue(''); // 보내면 빈칸
+                    //console.log(res.data.result)
                 } else {
                     alert('댓글 작성 실패');
                 }
@@ -44,7 +46,13 @@ function Comment(props) {
 
             {/* Comment List */}
             {props.commentLists && props.commentLists.map((comment, index) => (
-                <SingleComment videoId={videoId} comment={comment} />
+                // 처음 화면 대댓글 아닌 애들만 출력
+                (!comment.resposeTo &&
+                    <React.Fragment>
+                        <SingleComment refreshFunction={props.refreshFunction} videoId={videoId} comment={comment} />
+                        <ReplyComment commentLists={props.commentLists} parentCommentId={comment._id} videoId={videoId} />
+                    </React.Fragment>
+                )
             ))}
 
             {/* Root Comment Form */}

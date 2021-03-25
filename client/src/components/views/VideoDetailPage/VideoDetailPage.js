@@ -27,6 +27,7 @@ function VideoDetailPage(props) {
         Axios.post('/api/comment/getComments', variable)
             .then(res => {
                 if (res.data.success) {
+                    console.log(res.data.comments)
                     setComments(res.data.comments);
                 } else {
                     alert("비디오 정보 가져오기 실패");
@@ -34,6 +35,10 @@ function VideoDetailPage(props) {
             })
 
     }, []);
+    // state 끌어올리기: 밑에서 댓글 등록하면 리렌더? 업데이트
+    const refreshFunction = (newComment) => {
+        setComments(Comments.concat(newComment));
+    }
 
     if (VideoDetail.writer) {
         // 사용자 자신의 동영상에 구독 버튼 없애기
@@ -55,7 +60,7 @@ function VideoDetailPage(props) {
                         </List.Item>
 
                         {/* 댓글 */}
-                        <Comment videoId={videoId} commentLists={Comments} />
+                        <Comment refreshFunction={refreshFunction} videoId={videoId} commentLists={Comments} />
                     </div>
 
                 </Col>

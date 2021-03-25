@@ -24,21 +24,24 @@ function SingleComment(props) {
     const onSubmit = (e) => {
         e.preventDefault(); // refresh 방지
 
-        // const variables = {
-        //     content: CommentValue,
-        //     writer: user.userData._id, // redux에서 가져와보기
-        //     videoId: videoId, // props or url
-        //     //responseTo: 
-        // }
+        const variables = {
+            content: CommentValue,
+            writer: user.userData._id, // redux에서 가져와보기
+            videoId: videoId, // props or url
+            responseTo: props.comment._id
+        }
 
-        // Axios.post('/api/comment/saveComment', variables)
-        //     .then(res => {
-        //         if (res.data.success) {
-        //             console.log(res.data.result)
-        //         } else {
-        //             alert('댓글 작성 실패');
-        //         }
-        //     })
+        Axios.post('/api/comment/saveComment', variables)
+            .then(res => {
+                if (res.data.success) {
+                    props.refreshFunction(res.data.result);
+                    setCommentValue('');
+                    setOpenReply(false);
+                    //console.log(res.data.result);
+                } else {
+                    alert('댓글 작성 실패');
+                }
+            })
     }
 
     return (
