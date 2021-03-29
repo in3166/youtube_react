@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Axios from 'axios';
 import { useSelector } from 'react-redux';
 import { Comment, Avatar, Button, Input } from 'antd';
+import LikeDislikes from './LikeDislikes';
 
 const { TextArea } = Input;
 
@@ -18,7 +19,7 @@ function SingleComment(props) {
     const actions2 = [<span onClick={onClickReplyOpen} key="comment-basic-reply-to">Reply</span>]
 
     const onHandleChange = (e) => {
-        setCommentValue(e.target.value);
+        setCommentValue(e.target.value); // currnetTarget
     }
 
     const onSubmit = (e) => {
@@ -37,6 +38,7 @@ function SingleComment(props) {
                     props.refreshFunction(res.data.result);
                     setCommentValue('');
                     setOpenReply(false);
+
                     //console.log(res.data.result);
                 } else {
                     alert('댓글 작성 실패');
@@ -47,9 +49,9 @@ function SingleComment(props) {
     return (
         <div>
             <Comment
-                actions={actions2}
+                actions={[<LikeDislikes commentId={props.comment._id} userId={localStorage.getItem('userId')} />, actions2]}
                 author={props.comment.writer.name}
-                avatar={<Avatar src={props.comment.writer.image} alt />}
+                avatar={<Avatar src={props.comment.writer.image} alt="image" />}
                 content={<p>{props.comment.content}</p>}
             />
             {OpenReply &&

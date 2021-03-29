@@ -10,7 +10,7 @@ To use this application,
 3. Type  " npm install " inside the root directory  ( Download Server Dependencies ) 
 4. Type " npm install " inside the client directory ( Download Front-end Dependencies )
 
-`const bcrypt = require("bcrypt") 이부분을    require("bcryptjs") `
+
 
 # RDBMS - MongoDB 용어 비교
 ------------------------
@@ -21,7 +21,7 @@ Rows      |  Documents
 Columns   |  Fields
 ------------------------
 
-## Video Model 생성
+## Model 생성
 ### Video Collections
 - writer
 - title
@@ -32,6 +32,20 @@ Columns   |  Fields
 - views
 - duration
 - thumnbnail
+
+### Like Collections
+- Like
+  - userId
+  - commentId
+  - videoId
+- Dislike
+  - userId
+  - commentId
+  - videoId
+
+### 주의 사항
+- `const bcrypt = require("bcrypt") 이부분을    require("bcryptjs") `
+- `const a = () => { return ... }  || => (...)`
 
 <br><br><Br>
 

@@ -4,6 +4,7 @@ import Axios from 'axios';
 import SideVideo from './Sections/SideVideo.js';
 import Subscribe from './Sections/Subscribe';
 import Comment from './Sections/Comment';
+import LikeDislikes from './Sections/LikeDislikes';
 
 
 function VideoDetailPage(props) {
@@ -17,6 +18,7 @@ function VideoDetailPage(props) {
         Axios.post('/api/video/getVideoDetail', variable)
             .then(res => {
                 if (res.data.success) {
+                    // console.log(res.data.videoDetail)
                     setVideoDetail(res.data.videoDetail);
                 } else {
                     alert("비디오 정보 가져오기 실패");
@@ -27,7 +29,7 @@ function VideoDetailPage(props) {
         Axios.post('/api/comment/getComments', variable)
             .then(res => {
                 if (res.data.success) {
-                    console.log(res.data.comments)
+                    //   console.log(res.data.comments)
                     setComments(res.data.comments);
                 } else {
                     alert("비디오 정보 가져오기 실패");
@@ -51,7 +53,7 @@ function VideoDetailPage(props) {
                     <div style={{ width: '100%', padding: '3rem 4rem' }}>
                         <video style={{ width: '100%' }} src={`http://localhost:5000/${VideoDetail.filePath}`} controls />
                         {/* 구독 버튼 */}
-                        <List.Item actions={[subscribeButton]} >
+                        <List.Item actions={[<LikeDislikes video videoId={videoId} userId={localStorage.getItem('userId')} />, subscribeButton]} >
                             <List.Item.Meta
                                 avatar={<Avatar src={VideoDetail.writer.image} />}
                                 title={VideoDetail.writer.name}

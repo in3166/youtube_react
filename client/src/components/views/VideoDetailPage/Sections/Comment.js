@@ -47,10 +47,10 @@ function Comment(props) {
             {/* Comment List */}
             {props.commentLists && props.commentLists.map((comment, index) => (
                 // 처음 화면 대댓글 아닌 애들만 출력
-                (!comment.resposeTo &&
-                    <React.Fragment>
+                (!comment.responseTo &&
+                    <React.Fragment key={index}>
                         <SingleComment refreshFunction={props.refreshFunction} videoId={videoId} comment={comment} />
-                        <ReplyComment commentLists={props.commentLists} parentCommentId={comment._id} videoId={videoId} />
+                        <ReplyComment refreshFunction={props.refreshFunction} commentLists={props.commentLists} parentCommentId={comment._id} videoId={videoId} />
                     </React.Fragment>
                 )
             ))}
