@@ -5,6 +5,12 @@ import SingleComment from './SingleComment';
 
 function ReplyComment(props) {
 
+    const [ChildCommentNumber, setChildCommentNumber] = useState('')
+    useEffect(() => {
+
+
+    }, [])
+
     const renderReplyComment = (parentCommentId) => {
         props.commentLists.map((comment, index) => (
             <React.Fragment>
