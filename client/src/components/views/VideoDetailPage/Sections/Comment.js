@@ -25,17 +25,20 @@ function Comment(props) {
             writer: user.userData._id, // redux에서 가져와보기
             videoId: videoId, // props or url
         }
-
-        Axios.post('/api/comment/saveComment', variables)
-            .then(res => {
-                if (res.data.success) {
-                    props.refreshFunction(res.data.result);
-                    setCommentValue(''); // 보내면 빈칸
-                    //console.log(res.data.result)
-                } else {
-                    alert('댓글 작성 실패');
-                }
-            })
+        if (variables.writer === undefined) {
+            alert('로그인하세요.');
+        } else {
+            Axios.post('/api/comment/saveComment', variables)
+                .then(res => {
+                    if (res.data.success) {
+                        props.refreshFunction(res.data.result);
+                        setCommentValue(''); // 보내면 빈칸
+                        //console.log(res.data.result)
+                    } else {
+                        alert('댓글 작성 실패');
+                    }
+                })
+        }
     }
 
     return (

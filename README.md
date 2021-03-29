@@ -47,6 +47,13 @@ Columns   |  Fields
 - `const bcrypt = require("bcrypt") 이부분을    require("bcryptjs") `
 - `const a = () => { return ... }  || => (...)`
 
+## 추가 사항
+- 댓글, 비디오 삭제/수정 기능 추가
+- 날짜 정보 추가
+- 최상위 댓글 빼고 더보기나 숨김 기능을 없애고 보이기엔 같은 depth로 변경
+- 구독 페이지에 구독한 동영상 모두 보기 -> 구독한 사용자들을 list 하고 상세 페이지 만들기
+
+
 <br><br><Br>
 
 - https://www.youtube.com/channel/UCFyXA9x8lpL3EYWeYhj4C4Q?view_as=subscriber
