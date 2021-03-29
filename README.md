@@ -13,13 +13,12 @@ To use this application,
 
 
 # RDBMS - MongoDB 용어 비교
---------------------------
 |Database  |  Database   |
-|-------------------------
+|----------|-------------|
 |Tables    |  Collections|
 |Rows      |  Documents  |
 |Columns   |  Fields     |
---------------------------
+
 
 ## Model 생성
 ### Video Collections
